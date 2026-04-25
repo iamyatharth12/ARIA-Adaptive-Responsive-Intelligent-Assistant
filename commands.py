@@ -1,24 +1,77 @@
 import os, webbrowser
 
+# ─────────────────────────────────────────────
+#  HELPERS
+# ─────────────────────────────────────────────
 def clean_query(command):
     query = command.replace("play", "").strip()
     query = query.replace("on spotify", "").replace("spotify", "")
     return query.strip()
 
-def parse_command(command: str):
-    command = command.lower().strip()
-    if "time" in command and not command.startswith("play"):
-        return ("time", command)
-    if command.startswith("play"):
-        if "spotify" in command:
-            return ("play_spotify", command)
-        return ("play_youtube", command)
-    elif command.startswith("open"):
-        return ("open", command.replace("open", "", 1).strip())
-    elif command.startswith("search") or command.startswith("what is"):
-        return ("search", command)
-    return ("unknown", command)
+def find_file(name):
+    search_roots = [
+        os.path.expanduser("~/Desktop"),
+        os.path.expanduser("~/Documents"),
+        os.path.expanduser("~/Downloads"),
+        os.path.expanduser("~/Pictures"),
+        os.path.expanduser("~/Music"),
+    ]
+    name = name.lower()
+    found = []
+    for root in search_roots:
+        for dirpath, _, files in os.walk(root):
+            for f in files:
+                if name in f.lower():
+                    found.append(os.path.join(dirpath, f))
+            if len(found) >= 5:  # cap results
+                break
+    if found:
+        return "Found:\n" + "\n".join(found[:5])
+    return f"File not found: '{name}'"
 
+def system_info(query):
+    try:
+        import psutil
+        cpu  = psutil.cpu_percent(interval=0.5)
+        ram  = psutil.virtual_memory().percent
+        bat  = psutil.sensors_battery()
+        bat_str = f"{int(bat.percent)}%" if bat else "N/A"
+
+        if "cpu" in query:
+            return f"CPU usage: {cpu}%"
+        elif "ram" in query or "memory" in query:
+            return f"RAM usage: {ram}%"
+        elif "battery" in query or "bat" in query:
+            return f"Battery: {bat_str}"
+        else:
+            return f"CPU: {cpu}% | RAM: {ram}% | Battery: {bat_str}"
+    except ImportError:
+        return "psutil not installed. Run: pip install psutil"
+
+# ─────────────────────────────────────────────
+#  PARSER
+# ─────────────────────────────────────────────
+def parse_command(command: str):
+    c = command.lower().strip()
+
+    if "time" in c and not c.startswith("play"):
+        return ("time", c)
+    if c.startswith("find ") or c.startswith("search file "):
+        return ("find", c)
+    if any(c.startswith(k) for k in ["system info", "cpu", "ram", "battery", "memory"]):
+        return ("sysinfo", c)
+    if c.startswith("play"):
+        return ("play_spotify" if "spotify" in c else "play_youtube", c)
+    if c.startswith("open"):
+        return ("open", c.replace("open", "", 1).strip())
+    if c.startswith("search") or c.startswith("what is"):
+        return ("search", c)
+
+    return ("unknown", c)
+
+# ─────────────────────────────────────────────
+#  OPEN HANDLERS
+# ─────────────────────────────────────────────
 def play_spotify(command):
     query = clean_query(command)
     webbrowser.open(f"https://open.spotify.com/search/{query}")
@@ -66,15 +119,25 @@ def open_target(target):
     webbrowser.open(f"https://{target}.com")
     return f"Opened {target} in browser"
 
-def search_web(query):
+def search_web(raw):
+    query = raw.replace("search", "", 1).replace("what is", "", 1).strip()
     webbrowser.open(f"https://www.google.com/search?q={query}")
-    return f"Searching: {query}"
+    return f"Searching for: {query}"
 
+# ─────────────────────────────────────────────
+#  ROUTER
+# ─────────────────────────────────────────────
 def handle_command(command):
     from datetime import datetime
     intent, raw = parse_command(command)
+
     if intent == "time":
         return "Current time is " + datetime.now().strftime("%H:%M")
+    elif intent == "find":
+        name = raw.replace("find", "").replace("search file", "").strip()
+        return find_file(name)
+    elif intent == "sysinfo":
+        return system_info(raw)
     elif intent == "play_spotify":
         return play_spotify(raw)
     elif intent == "play_youtube":
@@ -85,4 +148,5 @@ def handle_command(command):
         return open_target(raw)
     elif intent == "search":
         return search_web(raw)
-    return "I didn't understand that. Try: open chrome / play lofi / search python"
+
+    return "I didn't understand that. Try: open chrome / play lofi / search python / find notes.txt / system info"

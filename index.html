@@ -8,7 +8,7 @@
 <style>
 
 /* ════════════════════════════════════════════
-   TOKENS
+   TOKENS & THEME
 ════════════════════════════════════════════ */
 :root {
   --c0: #04040c;
@@ -26,34 +26,24 @@
   --text:     #e2e2f0;
   --text2:    #9090b0;
   --text3:    #4a4a6a;
-  --user-bubble: rgba(139,92,246,0.18);
-  --aria-bubble: rgba(255,255,255,0.05);
   --mono: 'JetBrains Mono', monospace;
   --sans: 'Outfit', sans-serif;
-  --r: 18px;
 }
 
 /* ════════════════════════════════════════════
-   RESET
+   RESET & ANIMATED BG
 ════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
-
-/* ════════════════════════════════════════════
-   ANIMATED BACKGROUND
-════════════════════════════════════════════ */
-body {
+html, body html, body {
+  height: 100%;
+  overflow: hidden;
   font-family: var(--sans);
   color: var(--text);
   background: var(--c0);
-  display: flex;
-  position: relative;
 }
 
-/* mesh gradient layer */
 .bg-mesh {
-  position: fixed; inset: 0;
-  z-index: 0;
+  position: fixed; inset: 0; z-index: 0;
   background:
     radial-gradient(ellipse 900px 700px at 20% -10%,  rgba(88,28,220,0.22)  0%, transparent 65%),
     radial-gradient(ellipse 700px 800px at 90%  110%, rgba(6,182,212,0.14)  0%, transparent 60%),
@@ -63,921 +53,387 @@ body {
 }
 
 @keyframes meshShift {
-  0%   { filter: hue-rotate(0deg)   brightness(1);    }
-  50%  { filter: hue-rotate(15deg)  brightness(1.05); }
-  100% { filter: hue-rotate(-10deg) brightness(1);    }
+  0% { filter: hue-rotate(0deg) brightness(1); }
+  50% { filter: hue-rotate(15deg) brightness(1.05); }
+  100% { filter: hue-rotate(-10deg) brightness(1); }
 }
 
-/* floating orbs */
-.orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-  animation: orbFloat linear infinite;
-}
-.orb-1 {
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(139,92,246,0.15), transparent 70%);
-  top: -150px; left: -100px;
-  animation-duration: 25s;
-}
-.orb-2 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(6,182,212,0.12), transparent 70%);
-  bottom: -100px; right: -80px;
-  animation-duration: 30s;
-  animation-direction: reverse;
-}
-.orb-3 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%);
-  top: 40%; left: 50%;
-  animation-duration: 20s;
-}
+.orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; animation: orbFloat linear infinite; }
+.orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(139,92,246,0.15), transparent 70%); top: -150px; left: -100px; animation-duration: 25s; }
+.orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(6,182,212,0.12), transparent 70%); bottom: -100px; right: -80px; animation-duration: 30s; animation-direction: reverse; }
 
 @keyframes orbFloat {
-  0%   { transform: translate(0,    0)    scale(1);   }
-  25%  { transform: translate(30px,-20px) scale(1.05);}
-  50%  { transform: translate(15px, 30px) scale(0.95);}
-  75%  { transform: translate(-20px,10px) scale(1.02);}
-  100% { transform: translate(0,    0)    scale(1);   }
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(15px, 30px) scale(0.95); }
 }
 
 /* ════════════════════════════════════════════
-   LAYOUT
+   LAYOUT & SIDEBAR
 ════════════════════════════════════════════ */
-.shell {
-  position: relative; z-index: 1;
-  display: grid;
-  grid-template-columns: 256px 1fr;
-  width: 100%; height: 100vh;
-}
+.shell { position: relative; z-index: 1; display: grid; grid-template-columns: 256px 1fr; width: 100%; height: 100%; }
 
-/* ════════════════════════════════════════════
-   SIDEBAR
-════════════════════════════════════════════ */
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  background: var(--glass);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-right: 1px solid var(--border);
-  padding: 0;
-  overflow: hidden;
-  position: relative;
-}
+.sidebar { display: flex; flex-direction: column; background: var(--glass); backdrop-filter: blur(24px); border-right: 1px solid var(--border); overflow: hidden; position: relative; }
+.sidebar::after { content: ''; position: absolute; right: 0; top: 0; width: 1px; height: 100%; background: linear-gradient(180deg, transparent, rgba(139,92,246,0.5), rgba(6,182,212,0.4), transparent); }
 
-/* purple shimmer line on sidebar edge */
-.sidebar::after {
-  content: '';
-  position: absolute; right: 0; top: 0;
-  width: 1px; height: 100%;
-  background: linear-gradient(180deg,
-    transparent 0%,
-    rgba(139,92,246,0.5) 30%,
-    rgba(6,182,212,0.4) 70%,
-    transparent 100%);
-  animation: shimmer 4s ease-in-out infinite alternate;
-}
+.logo-block { padding: 28px 22px 22px; border-bottom: 1px solid var(--border); }
+.logo-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 20px; padding: 3px 10px 3px 6px; margin-bottom: 10px; }
+.logo-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: #a78bfa; box-shadow: 0 0 8px #a78bfa; animation: blink 2.5s infinite; }
+.logo-pill-text { font-size: 9px; font-weight: 600; letter-spacing: 2px; color: #a78bfa; }
+.logo-name { font-size: 30px; font-weight: 700; background: linear-gradient(135deg, #fff, #a78bfa, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
 
-@keyframes shimmer {
-  0%   { opacity: 0.4; transform: scaleY(0.9); }
-  100% { opacity: 1;   transform: scaleY(1);   }
-}
-
-/* logo */
-.logo-block {
-  padding: 28px 22px 22px;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-}
-
-.logo-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(139,92,246,0.15);
-  border: 1px solid rgba(139,92,246,0.3);
-  border-radius: 20px;
-  padding: 3px 10px 3px 6px;
-  margin-bottom: 10px;
-}
-
-.logo-pill-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: #a78bfa;
-  box-shadow: 0 0 8px #a78bfa;
-  animation: blink 2.5s ease-in-out infinite;
-}
-
-@keyframes blink {
-  0%,100% { opacity:1; box-shadow: 0 0 8px #a78bfa; }
-  50%      { opacity:0.4; box-shadow: 0 0 3px #a78bfa; }
-}
-
-.logo-pill-text {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  color: #a78bfa;
-}
-
-.logo-name {
-  font-family: var(--sans);
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  background: linear-gradient(135deg, #fff 0%, #a78bfa 60%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.logo-sub {
-  font-size: 10px;
-  color: var(--text3);
-  letter-spacing: 1.5px;
-  font-weight: 400;
-}
-
-/* sidebar buttons */
-.sb-btns {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 14px 14px 6px;
-}
-
-.btn-new {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 11px;
-  background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(6,182,212,0.15));
-  border: 1px solid rgba(139,92,246,0.35);
-  border-radius: 12px;
-  color: #c4b5fd;
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s;
-  letter-spacing: 0.3px;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-new::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(6,182,212,0.2));
-  opacity: 0;
-  transition: opacity 0.25s;
-}
-
+.sb-btns { display: flex; flex-direction: column; gap: 6px; padding: 14px; }
+.btn-new { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px; background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(6,182,212,0.15)); border: 1px solid rgba(139,92,246,0.35); border-radius: 12px; color: #c4b5fd; font-weight: 600; cursor: pointer; transition: 0.25s; }
 .btn-new:hover { border-color: rgba(139,92,246,0.6); box-shadow: 0 0 20px rgba(139,92,246,0.2); }
-.btn-new:hover::before { opacity: 1; }
-.btn-new:active { transform: scale(0.97); }
 
-.btn-demo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 9px;
-  background: transparent;
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  color: var(--text3);
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-.btn-demo:hover { color: var(--text2); border-color: rgba(255,255,255,0.2); background: var(--glass); }
-.btn-demo:disabled { opacity: 0.35; cursor: not-allowed; }
-
-/* conversation list */
-.sb-section-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  color: var(--text3);
-  padding: 14px 18px 6px;
-  text-transform: uppercase;
-}
-
-.conv-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 2px 8px 12px;
-}
-
-.conv-list::-webkit-scrollbar { width: 2px; }
-.conv-list::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 2px; }
-
-.conv-item {
-  padding: 10px 12px;
-  border-radius: 10px;
-  font-size: 12px;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.18s;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 2px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 400;
-  position: relative;
-}
-
-.conv-item::before {
-  content: '◦';
-  color: var(--text3);
-  flex-shrink: 0;
-  font-size: 10px;
-  transition: all 0.18s;
-}
-
-.conv-item:hover {
-  background: var(--glass2);
-  color: var(--text);
-  border-color: var(--border);
-  transform: translateX(3px);
-}
-
-.conv-item:hover::before { color: var(--purple2); }
-
-.conv-item.active {
-  background: rgba(139,92,246,0.12);
-  color: #c4b5fd;
-  border-color: rgba(139,92,246,0.25);
-}
-
-.conv-item.active::before { color: var(--purple2); }
-
-/* sidebar footer */
-.sb-footer {
-  padding: 14px 18px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sb-footer-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 8px #34d399;
-  flex-shrink: 0;
-}
-
-.sb-footer-text {
-  font-size: 10px;
-  color: var(--text3);
-  letter-spacing: 1px;
-}
+.conv-list { flex: 1; overflow-y: auto; padding: 8px; }
+.conv-item { padding: 10px 12px; border-radius: 10px; font-size: 12px; color: var(--text2); cursor: pointer; transition: 0.18s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px; }
+.conv-item::before { content: '◦'; color: var(--text3); }
+.conv-item:hover { background: var(--glass2); color: var(--text); transform: translateX(3px); }
+.conv-item.active { background: rgba(139,92,246,0.12); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.25); }
 
 /* ════════════════════════════════════════════
-   MAIN PANEL
+   MAIN & CHAT
 ════════════════════════════════════════════ */
-.main {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-}
+.main { display: flex; flex-direction: column; overflow: hidden; position: relative; }
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 36px; border-bottom: 1px solid var(--border); background: rgba(4,4,12,0.5); backdrop-filter: blur(20px); z-index: 10; }
+.chat { flex: 1; overflow-y: auto; padding: 28px 52px 16px; display: flex; flex-direction: column; gap: 4px; scroll-behavior: smooth; }
 
-/* topbar */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 36px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(4,4,12,0.5);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  flex-shrink: 0;
-  z-index: 10;
-}
+/* ── WELCOME ── */
+.welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; animation: fadeUp 0.7s ease-out; }
+.welcome-icon { width: 72px; height: 72px; border-radius: 22px; background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(6,182,212,0.2)); border: 1px solid rgba(139,92,246,0.3); display: flex; align-items: center; justify-content: center; font-size: 30px; margin-bottom: 22px; }
+.welcome h2 { font-size: 26px; font-weight: 600; color: #fff; margin-bottom: 10px; }
+.welcome p { font-size: 14px; color: var(--text2); margin-bottom: 28px; }
 
-.topbar-id {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text3);
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.welcome-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 480px; }
+.chip { padding: 8px 16px; background: var(--glass); border: 1px solid var(--border2); border-radius: 100px; font-size: 12px; color: var(--text2); cursor: pointer; transition: 0.2s; font-weight: 500; }
+.chip:hover { background: rgba(139,92,246,0.15); color: #c4b5fd; transform: translateY(-2px); box-shadow: 0 4px 20px rgba(139,92,246,0.15); }
 
-.topbar-divider { color: rgba(139,92,246,0.4); }
+/* ── BUBBLES ── */
+.msg-row { display: flex; width: 100%; gap: 12px; align-items: center; animation: fadeUp 0.35s ease-out; padding: 4px 0; }
+.msg-row.user { flex-direction: row-reverse; justify-content: flex-start; }
+.av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.msg-row.aria .av { background: linear-gradient(135deg, #6d28d9, #0891b2); color: #fff; box-shadow: 0 0 16px rgba(109,40,217,0.5); }
+.msg-row.user .av { background: rgba(255,255,255,0.08); color: var(--text2); border: 1px solid var(--border2); }
 
-.topbar-clock {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text3);
-  letter-spacing: 1px;
-}
-
-/* ─── CHAT ─── */
-.chat {
-  flex: 1;
-  overflow-y: auto;
-  padding: 28px 52px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  scroll-behavior: smooth;
-}
-
-.chat::-webkit-scrollbar { width: 4px; }
-.chat::-webkit-scrollbar-thumb {
-  background: rgba(139,92,246,0.25);
-  border-radius: 4px;
-}
-.chat::-webkit-scrollbar-track { background: transparent; }
-
-/* ── WELCOME SCREEN ── */
-.welcome {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  text-align: center;
-  padding: 40px 20px;
-  animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
-}
-
-.welcome-icon {
-  width: 72px; height: 72px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(6,182,212,0.2));
-  border: 1px solid rgba(139,92,246,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 30px;
-  margin-bottom: 22px;
-  box-shadow: 0 0 40px rgba(139,92,246,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
-  animation: iconPulse 3s ease-in-out infinite;
-}
-
-@keyframes iconPulse {
-  0%,100% { box-shadow: 0 0 40px rgba(139,92,246,0.15), inset 0 1px 0 rgba(255,255,255,0.1); }
-  50%      { box-shadow: 0 0 60px rgba(139,92,246,0.25), inset 0 1px 0 rgba(255,255,255,0.1); }
-}
-
-.welcome h2 {
-  font-size: 26px;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: -0.5px;
-  margin-bottom: 10px;
-  line-height: 1.2;
-}
-
-.welcome p {
-  font-size: 14px;
-  color: var(--text2);
-  line-height: 1.8;
-  margin-bottom: 28px;
-  max-width: 400px;
-}
-
-.welcome-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  max-width: 480px;
-}
-
-.chip {
-  padding: 8px 16px;
-  background: var(--glass);
-  border: 1px solid var(--border2);
-  border-radius: 100px;
-  font-size: 12px;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.chip:hover {
-  background: rgba(139,92,246,0.15);
-  border-color: rgba(139,92,246,0.4);
-  color: #c4b5fd;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(139,92,246,0.15);
-}
-
-.chip:active { transform: translateY(0); }
-
-/* ── MESSAGE BUBBLES ── */
-.msg-row {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  animation: fadeUp 0.35s cubic-bezier(0.16,1,0.3,1) both;
-  padding: 4px 0;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0)    scale(1);    }
-}
-
-.msg-row.user { flex-direction: row-reverse; }
-
-/* avatar */
-.av {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700;
-  position: relative;
-  bottom: 0;
-}
-
-.msg-row.aria .av {
-  background: linear-gradient(135deg, #6d28d9, #0891b2);
-  color: #fff;
-  box-shadow: 0 0 16px rgba(109,40,217,0.5);
-}
-
-.msg-row.user .av {
-  background: rgba(255,255,255,0.08);
-  color: var(--text2);
-  border: 1px solid var(--border2);
-}
-
-/* bubble */
-.bubble-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  max-width: 68%;
-}
-
+.bubble-wrap { display: flex; flex-direction: column; gap: 3px; max-width: 68%; }
 .msg-row.user .bubble-wrap { align-items: flex-end; }
+.bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.7; backdrop-filter: blur(10px); }
+.msg-row.aria .bubble { background: var(--aria-bubble); border: 1px solid var(--border2); border-bottom-left-radius: 5px; color: var(--text); }
+.msg-row.user .bubble { background: linear-gradient(135deg, rgba(109,40,217,0.3), rgba(59,130,246,0.2)); border: 1px solid rgba(139,92,246,0.3); border-bottom-right-radius: 5px; color: #ddd6fe; }
 
-.bubble {
-  padding: 12px 16px;
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 1.7;
-  position: relative;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: box-shadow 0.2s;
-}
+.tok { font-family: var(--mono); font-size: 12px; color: #a78bfa; background: rgba(139,92,246,0.15); padding: 1px 6px; border-radius: 5px; }
 
-.msg-row.aria .bubble {
-  background: var(--aria-bubble);
-  border: 1px solid var(--border2);
-  border-bottom-left-radius: 5px;
-  color: var(--text);
-  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
-}
+/* ── CONFIRMATION UI ── */
+.confirm-row { display: flex; gap: 10px; margin-top: 12px; animation: fadeUp 0.3s ease-out; }
+.confirm-btn { padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; font-family: var(--sans); cursor: pointer; transition: all 0.2s; border: 1px solid transparent; color: #fff; }
+.confirm-btn.yes { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); }
+.confirm-btn.yes:hover { background: rgba(139,92,246,0.5); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.2); }
+.confirm-btn.no { background: rgba(236,72,153,0.15); border-color: rgba(236,72,153,0.3); color: #fbcfe8; }
+.confirm-btn.no:hover { background: rgba(236,72,153,0.3); transform: translateY(-1px); }
 
-.msg-row.aria .bubble:hover {
-  box-shadow: 0 4px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(139,92,246,0.1);
-}
+/* ── INPUT ── */
+.input-area { padding: 16px 52px 22px; border-top: 1px solid var(--border); background: rgba(4,4,12,0.6); backdrop-filter: blur(24px); }
+.input-shell { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border2); border-radius: 16px; padding: 6px 6px 6px 20px; transition: 0.3s; }
+#cmdInput { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-size: 14px; padding: 10px 0; }
+.send-btn { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #7c3aed, #2563eb); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+.send-btn:hover { transform: scale(1.06); box-shadow: 0 0 30px rgba(124,58,237,0.55); }
 
-.msg-row.user .bubble {
-  background: linear-gradient(135deg, rgba(109,40,217,0.3), rgba(59,130,246,0.2));
-  border: 1px solid rgba(139,92,246,0.3);
-  border-bottom-right-radius: 5px;
-  color: #ddd6fe;
-  box-shadow: 0 2px 20px rgba(109,40,217,0.15);
-}
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-.msg-row.user .bubble:hover {
-  box-shadow: 0 4px 30px rgba(109,40,217,0.25);
-}
-
-/* meta */
-.bubble-meta {
-  font-size: 10px;
-  color: var(--text3);
-  padding: 0 4px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* code token */
-.tok {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: #a78bfa;
-  background: rgba(139,92,246,0.15);
-  padding: 1px 6px;
-  border-radius: 5px;
-  border: 1px solid rgba(139,92,246,0.2);
-}
-
-/* ── TYPING INDICATOR ── */
-.typing-bubble {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 14px 18px;
-  min-width: 64px;
-}
-
-.t-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--purple2);
-  animation: tdot 1.4s ease-in-out infinite;
-  box-shadow: 0 0 8px rgba(167,139,250,0.6);
-}
-.t-dot:nth-child(2) { animation-delay: 0.2s; background: var(--cyan); box-shadow: 0 0 8px rgba(6,182,212,0.6); }
-.t-dot:nth-child(3) { animation-delay: 0.4s; background: var(--pink); box-shadow: 0 0 8px rgba(236,72,153,0.6); }
-
-@keyframes tdot {
-  0%,60%,100% { transform: translateY(0)    scale(0.8); opacity: 0.5; }
-  30%          { transform: translateY(-8px) scale(1.1); opacity: 1;   }
-}
-
-/* ════════════════════════════════════════════
-   INPUT AREA
-════════════════════════════════════════════ */
-.input-area {
-  padding: 16px 52px 22px;
-  border-top: 1px solid var(--border);
-  background: rgba(4,4,12,0.6);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  flex-shrink: 0;
-  z-index: 10;
-}
-
-.input-shell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border2);
-  border-radius: 16px;
-  padding: 6px 6px 6px 20px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  position: relative;
-}
-
-.input-shell:focus-within {
-  border-color: rgba(139,92,246,0.5);
-  box-shadow:
-    0 0 0 4px rgba(139,92,246,0.08),
-    0 0 40px rgba(139,92,246,0.12);
-}
-
-#cmdInput {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 400;
-  caret-color: var(--purple2);
-  padding: 10px 0;
-  letter-spacing: 0.2px;
-}
-
-#cmdInput::placeholder { color: var(--text3); }
-
-.send-btn {
-  width: 42px; height: 42px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #7c3aed, #2563eb);
-  border: none;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0;
-  box-shadow: 0 0 20px rgba(124,58,237,0.35);
-}
-
-.send-btn:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 30px rgba(124,58,237,0.55);
-}
-
-.send-btn:active { transform: scale(0.95); }
-
-.send-btn svg { width: 17px; height: 17px; fill: white; }
-
-.input-hint {
-  font-size: 10px;
-  color: var(--text3);
-  text-align: center;
-  margin-top: 9px;
-  letter-spacing: 0.5px;
-}
-
-/* ════════════════════════════════════════════
-   SCROLLBAR & MISC
-════════════════════════════════════════════ */
-* { -webkit-font-smoothing: antialiased; }
+.typing-bubble { display: flex; align-items: center; gap: 5px; padding: 14px 18px; }
+.t-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--purple2); animation: tdot 1.4s infinite; }
+@keyframes tdot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-8px); opacity: 1; } }
 
 </style>
 </head>
 <body>
 
-<!-- ── BACKGROUND LAYERS ── -->
 <div class="bg-mesh"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
 
 <div class="shell">
-
-  <!-- ════ SIDEBAR ════ -->
   <aside class="sidebar">
     <div class="logo-block">
-      <div class="logo-pill">
-        <div class="logo-pill-dot"></div>
-        <span class="logo-pill-text">ONLINE</span>
-      </div>
+      <div class="logo-pill"><div class="logo-pill-dot"></div><span class="logo-pill-text">ONLINE</span></div>
       <div class="logo-name">ARIA</div>
-      <div class="logo-sub">ADAPTIVE INTELLIGENCE</div>
     </div>
-
-    <div class="sb-btns">
-      <button class="btn-new" onclick="newChat()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        New Chat
-      </button>
-      <button class="btn-demo" id="demoBtn" onclick="runDemo()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        Run Demo
-      </button>
-    </div>
-
-    <div class="sb-section-label">Recent</div>
-
+    <div class="sb-btns"><button class="btn-new" onclick="newChat()">+ New Chat</button></div>
+    <div class="sb-section-label">Recent History</div>
     <div class="conv-list" id="convList"></div>
-
-    <div class="sb-footer">
-      <div class="sb-footer-dot"></div>
-      <span class="sb-footer-text">SYSTEM READY</span>
-    </div>
   </aside>
 
-  <!-- ════ MAIN ════ -->
   <main class="main">
-
-    <!-- topbar -->
     <div class="topbar">
-      <div class="topbar-id">
-        ARIA <span class="topbar-divider">/</span> SESSION
-      </div>
-      <div class="topbar-clock" id="clock"></div>
+      <div class="topbar-id">ARIA <span style="color:rgba(139,92,246,0.4)">/</span> SESSION</div>
+      <div id="clock" style="font-family:var(--mono); font-size:11px; color:var(--text3);"></div>
     </div>
 
-    <!-- chat -->
     <div class="chat" id="chat">
       <div class="welcome" id="welcome">
         <div class="welcome-icon">✦</div>
         <h2>How can I help you?</h2>
-        <p>Open apps, play music, search the web,<br>find files, check system stats, and more.</p>
+        <p>Open apps, check system stats, and more.</p>
         <div class="welcome-chips">
           <span class="chip" onclick="quickSend('open chrome')">🌐 Open Chrome</span>
           <span class="chip" onclick="quickSend('play lofi hip hop')">🎵 Play Lofi</span>
           <span class="chip" onclick="quickSend('system info')">💻 System Info</span>
-          <span class="chip" onclick="quickSend('start coding')">⚡ Start Coding</span>
           <span class="chip" onclick="quickSend('what time is it')">🕐 Time</span>
-          <span class="chip" onclick="quickSend('search python tutorials')">🔍 Search Web</span>
+          <span class="chip" onclick="quickSend('search python')">🔍 Search</span>
         </div>
       </div>
     </div>
 
-    <!-- input -->
     <div class="input-area">
       <div class="input-shell">
-        <input id="cmdInput" type="text"
-          placeholder="Ask ARIA anything..."
-          autocomplete="off" spellcheck="false"/>
-        <button class="send-btn" onclick="sendCommand()" title="Send">
-          <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        <input id="cmdInput" type="text" placeholder="Ask ARIA anything..." autocomplete="off"/>
+        <button class="send-btn" onclick="sendCommand()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
         </button>
       </div>
-      <div class="input-hint">Press Enter to send &nbsp;·&nbsp; ARIA executes real system actions</div>
     </div>
-
   </main>
 </div>
 
-<!-- ════════════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════════════ -->
 <script>
 /* ── state ── */
-const chatEl    = document.getElementById('chat');
-const inputEl   = document.getElementById('cmdInput');
-const convList  = document.getElementById('convList');
+const chatEl = document.getElementById('chat');
+const inputEl = document.getElementById('cmdInput');
 const welcomeEl = document.getElementById('welcome');
-let currentConvId = null;
+let chats = [];
+let currentChatId = null;
+let pendingCommand = null;
 
-/* ── clock ── */
-const clockEl = document.getElementById('clock');
-(function tick() {
-  clockEl.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  setTimeout(tick, 1000);
-})();
+/* ── helpers ── */
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
+const getTime = () => new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+function fmt(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/([A-Z]:\\[\w\\]+)/g, '<span class="tok">$1</span>');
+}
 
-/* ── init ── */
-inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') sendCommand(); });
-loadSidebar();
+/* ── local storage & history ── */
+function loadChats() {
+  const stored = localStorage.getItem("aria_chats");
+  chats = stored ? JSON.parse(stored) : [];
+  if (chats.length === 0) createChat();
+  else currentChatId = chats[0].id;
+}
 
-/* ── quick send ── */
-function quickSend(cmd) { inputEl.value = cmd; sendCommand(); }
+function saveChats() {
+  if (chats.length > 10) chats = chats.slice(0, 10);
+  localStorage.setItem("aria_chats", JSON.stringify(chats));
+}
 
-/* ── send ── */
+function createChat() {
+  currentChatId = "chat_" + Date.now();
+  chats.unshift({ id: currentChatId, title: "New Chat", messages: [] });
+  saveChats();
+  renderSidebar();
+}
+
+function renderSidebar() {
+  const list = document.getElementById('convList');
+  list.innerHTML = '';
+  chats.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'conv-item' + (c.id === currentChatId ? ' active' : '');
+    d.textContent = c.title;
+    d.onclick = () => switchChat(c.id);
+    list.appendChild(d);
+  });
+}
+
+function switchChat(id) {
+  if (currentChatId === id) return;
+  currentChatId = id;
+  const chat = chats.find(c => c.id === id);
+  clearChat();
+  hideWelcome();
+  if (chat && chat.messages.length > 0) {
+    chat.messages.forEach(m => appendBubble(m.role, m.text));
+  } else {
+    chatEl.appendChild(welcomeEl);
+    triggerWelcome();
+  }
+  renderSidebar();
+}
+
+function saveToHistory(role, text) {
+  let chat = chats.find(c => c.id === currentChatId);
+  if (!chat) { createChat(); chat = chats[0]; }
+  if (chat.messages.length === 0 && role === 'user') {
+    chat.title = text.length > 20 ? text.substring(0, 20) + '...' : text;
+  }
+  chat.messages.push({ role, text });
+  saveChats();
+  renderSidebar();
+}
+
+/* ── welcome experience ── */
+async function triggerWelcome() {
+  await wait(400);
+  const typId = showTyping();
+  await wait(900);
+  removeTyping(typId);
+  
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
+  const welcomeText = `Good ${greet}. I'm ARIA. What would you like to do today?`;
+  
+  await typeBubble('aria', welcomeText);
+}
+
+async function typeBubble(role, text) {
+  const row = document.createElement('div');
+  row.className = `msg-row ${role}`;
+  const id = 'txt_' + Date.now();
+  row.innerHTML = `
+    <div class="av">A</div>
+    <div class="bubble-wrap">
+      <div class="bubble-meta">ARIA · ${getTime()}</div>
+      <div class="bubble" id="${id}" style="box-shadow: 0 0 20px rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4);"></div>
+    </div>`;
+  chatEl.appendChild(row);
+  const el = document.getElementById(id);
+  let cur = "";
+  for(let i=0; i<text.length; i++){
+    cur += text[i];
+    el.innerHTML = fmt(cur) + '<span style="border-right:3px solid var(--purple2); animation:blink 0.8s infinite;"></span>';
+    chatEl.scrollTop = chatEl.scrollHeight;
+    await wait(30);
+  }
+  el.innerHTML = fmt(text);
+}
+
+/* ── messaging & confirmation ── */
 async function sendCommand() {
   const cmd = inputEl.value.trim();
   if (!cmd) return;
   inputEl.value = '';
   hideWelcome();
+  if (!currentChatId) createChat();
 
   appendBubble('user', cmd);
+  saveToHistory('user', cmd);
 
-  const typId = showTyping();
+  const sensitiveKeywords = ['open', 'find', 'system', 'play'];
+  const isSensitive = sensitiveKeywords.some(k => cmd.toLowerCase().startsWith(k));
+
+  if (isSensitive) {
+    pendingCommand = cmd;
+    showConfirmation(cmd);
+    return; 
+  }
+
+  await executeCommand(cmd);
+}
+
+function showConfirmation(cmd) {
+  const row = document.createElement('div');
+  row.className = `msg-row aria`;
+  row.innerHTML = `
+    <div class="av">A</div>
+    <div class="bubble-wrap">
+      <div class="bubble-meta">ARIA · ${getTime()}</div>
+      <div class="bubble" style="border-color: rgba(236,72,153,0.4);">
+        This will execute: <strong>${fmt(cmd)}</strong> on your system. Continue?
+        <div class="confirm-row">
+          <button class="confirm-btn yes" onclick="handleConfirmation(true)">Yes, proceed</button>
+          <button class="confirm-btn no" onclick="handleConfirmation(false)">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  chatEl.appendChild(row);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+async function handleConfirmation(isYes) {
+  const cmd = pendingCommand;
+  pendingCommand = null;
+
+  const btnRows = document.querySelectorAll('.confirm-row');
+  btnRows.forEach(row => row.remove());
+
+  if (!isYes) {
+    appendBubble('aria', 'Action cancelled.');
+    saveToHistory('aria', 'Action cancelled.');
+    return;
+  }
+
+  await executeCommand(cmd);
+}
+
+async function executeCommand(cmd) {
+  const tid = showTyping();
   try {
-    const res  = await fetch('/command', {
+    const res = await fetch('/command', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ command: cmd, conv_id: currentConvId })
+      body: JSON.stringify({ command: cmd })
     });
     const data = await res.json();
-    currentConvId = data.conv_id;
-    removeTyping(typId);
+    removeTyping(tid);
     appendBubble('aria', data.response);
-    loadSidebar();
+    saveToHistory('aria', data.response);
   } catch {
-    removeTyping(typId);
-    appendBubble('aria', 'Connection error — is Flask running?');
+    removeTyping(tid);
+    appendBubble('aria', 'System error — check backend.');
   }
 }
 
-/* ── sidebar ── */
-async function loadSidebar() {
-  try {
-    const res   = await fetch('/get_conversations');
-    const convs = await res.json();
-    convList.innerHTML = '';
-    [...convs].reverse().forEach(c => {
-      const d = document.createElement('div');
-      d.className = 'conv-item' + (c.id === currentConvId ? ' active' : '');
-      d.textContent = c.preview;
-      d.onclick = () => loadConversation(c.id);
-      convList.appendChild(d);
-    });
-  } catch {}
-}
-
-async function loadConversation(id) {
-  currentConvId = id;
-  try {
-    const res  = await fetch('/get_conversation', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ id })
-    });
-    const msgs = await res.json();
-    clearChat();
-    msgs.forEach(m => appendBubble(m.role, m.text));
-    loadSidebar();
-  } catch {}
-}
-
-/* ── new chat ── */
-function newChat() {
-  currentConvId = null;
-  clearChat();
-  chatEl.appendChild(welcomeEl);
-  inputEl.focus();
-  loadSidebar();
-}
-
-function clearChat() { chatEl.innerHTML = ''; }
-function hideWelcome() {
-  if (welcomeEl.parentNode === chatEl) chatEl.removeChild(welcomeEl);
-}
-
-/* ── render bubble ── */
-function getTime() {
-  return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-}
-
-function fmt(text) {
-  const s = text
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/([A-Za-z]:[\\\/][\w\\\/.\-]+)/g, '<span class="tok">$1</span>')
-    .replace(/(\/[\w\/.\-]{5,})/g, '<span class="tok">$1</span>');
-  return s;
-}
-
 function appendBubble(role, text) {
-  const isUser = role === 'user';
+  const isU = role === 'user';
   const row = document.createElement('div');
   row.className = `msg-row ${role}`;
   row.innerHTML = `
-    <div class="av">${isUser ? 'Y' : 'A'}</div>
+    <div class="av">${isU ? 'Y' : 'A'}</div>
     <div class="bubble-wrap">
-      <div class="bubble-meta">${isUser ? 'You' : 'ARIA'} · ${getTime()}</div>
+      <div class="bubble-meta">${isU ? 'You' : 'ARIA'} · ${getTime()}</div>
       <div class="bubble">${fmt(text)}</div>
     </div>`;
   chatEl.appendChild(row);
   chatEl.scrollTop = chatEl.scrollHeight;
 }
 
-/* ── typing indicator ── */
 function showTyping() {
-  const id  = 'typ_' + Date.now();
+  const id = 't_' + Date.now();
   const row = document.createElement('div');
-  row.id = id;
-  row.className = 'msg-row aria';
-  row.innerHTML = `
-    <div class="av">A</div>
-    <div class="bubble-wrap">
-      <div class="bubble-meta">ARIA · thinking</div>
-      <div class="bubble typing-bubble">
-        <div class="t-dot"></div>
-        <div class="t-dot"></div>
-        <div class="t-dot"></div>
-      </div>
-    </div>`;
+  row.id = id; row.className = 'msg-row aria';
+  row.innerHTML = `<div class="av">A</div><div class="bubble-wrap"><div class="bubble typing-bubble"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div></div>`;
   chatEl.appendChild(row);
   chatEl.scrollTop = chatEl.scrollHeight;
   return id;
 }
 
-function removeTyping(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
+function removeTyping(id) { const e = document.getElementById(id); if(e) e.remove(); }
+function clearChat() { chatEl.innerHTML = ''; }
+function hideWelcome() { if(welcomeEl.parentNode === chatEl) chatEl.removeChild(welcomeEl); }
+function quickSend(c) { inputEl.value = c; sendCommand(); }
+
+function newChat() {
+  createChat();
+  clearChat();
+  chatEl.appendChild(welcomeEl);
+  triggerWelcome();
 }
 
-/* ── demo ── */
-async function runDemo() {
-  const btn  = document.getElementById('demoBtn');
-  const cmds = ['open chrome','play lofi hip hop','system info','find notes','what time is it','start coding'];
+/* ── init ── */
+inputEl.addEventListener('keydown', e => { if(e.key === 'Enter') sendCommand(); });
+loadChats();
+renderSidebar();
 
-  btn.disabled = true;
-  btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity=".3"/><path d="M12 2a10 10 0 0 1 0 20A10 10 0 0 1 12 2z"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></path></svg> Running...';
-
-  newChat();
-  await wait(500);
-
-  for (const cmd of cmds) {
-    for (const ch of cmd) { inputEl.value += ch; await wait(35); }
-    await wait(450);
-    inputEl.value = '';
-    hideWelcome();
-    appendBubble('user', cmd);
-
-    const typId = showTyping();
-    try {
-      const res  = await fetch('/command', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ command: cmd, conv_id: currentConvId })
-      });
-      const data = await res.json();
-      currentConvId = data.conv_id;
-      removeTyping(typId);
-      appendBubble('aria', data.response);
-    } catch {
-      removeTyping(typId);
-      appendBubble('aria', 'Connection error.');
-      break;
-    }
-    await wait(1500);
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Run Demo';
-  loadSidebar();
+const activeChat = chats.find(c => c.id === currentChatId);
+if (activeChat && activeChat.messages.length === 0) {
+  triggerWelcome();
+} else {
+  switchChat(currentChatId);
 }
 
-function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+setInterval(() => {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}, 1000);
 </script>
 </body>
 </html>

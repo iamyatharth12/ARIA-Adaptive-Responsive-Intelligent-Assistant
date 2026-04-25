@@ -1,5 +1,30 @@
 import os, webbrowser
+from flask import Flask, request, jsonify, send_from_directory
+from commands import handle_command
 
+app = Flask(__name__, static_folder=".")
+
+@app.route("/")
+def index():
+    return send_from_directory(".", "index.html")
+
+@app.route("/command", methods=["POST"])
+def command():
+    data = request.json
+    user_input = data.get("command", "").strip()
+
+    if not user_input:
+        return jsonify({"response": "Say something."})
+
+    try:
+        result = handle_command(user_input)
+    except Exception as e:
+        result = f"Error: {str(e)}"
+
+    return jsonify({"response": result})
+
+if __name__ == "__main__":
+    app.run(debug=True)
 # ─────────────────────────────────────────────
 #  HELPERS
 # ─────────────────────────────────────────────
@@ -110,15 +135,12 @@ def open_app(target):
     import subprocess, time
 
     known_apps = {
-        "chrome":   r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-        "notepad":  "notepad.exe",
+        "chrome": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        "notepad": "notepad.exe",
         "explorer": "explorer.exe",
-        "calc":     "calc.exe",
-        "vscode":   r"C:\Users\%USERNAME%\AppData\Local\Programs\Microsoft VS Code\Code.exe",
+        "calc": "calc.exe",
+        "vscode": r"C:\Users\%USERNAME%\AppData\Local\Programs\Microsoft VS Code\Code.exe",
     }
-
-    if target == "spotify":
-        return open_spotify()
 
     if target in known_apps:
         path = os.path.expandvars(known_apps[target])
@@ -126,19 +148,30 @@ def open_app(target):
             subprocess.Popen(path)
             return f"Opening {target}..."
         except Exception:
-            pass  # fall through to Windows Search
+            pass  # fallback
 
-    # fallback — Windows Search
+    # 🔥 THIS PART MUST BE INSIDE FUNCTION
     try:
         import pyautogui
+        import time
+
         pyautogui.press("win")
-        time.sleep(0.8)
-        pyautogui.write(target, interval=0.05)
-        time.sleep(0.8)
+        time.sleep(1.2)
+
+        pyautogui.hotkey("ctrl", "a")
+        pyautogui.press("backspace")
+        time.sleep(0.2)
+
+        pyautogui.write(target, interval=0.08)
+        time.sleep(0.6)
+
         pyautogui.press("enter")
+
         return f"Used Windows Search to open '{target}'"
+
     except ImportError:
         return "pyautogui not installed. Run: pip install pyautogui"
+
     except Exception as e:
         return f"Failed to open '{target}': {str(e)}"
 

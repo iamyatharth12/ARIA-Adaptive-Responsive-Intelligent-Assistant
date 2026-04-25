@@ -154,6 +154,9 @@ def search_web(raw):
 # ─────────────────────────────────────────────
 #  ROUTER
 # ─────────────────────────────────────────────
+# ─────────────────────────────────────────────
+#  ROUTER
+# ─────────────────────────────────────────────
 def handle_command(command):
     from datetime import datetime
     c = command.lower().strip()
@@ -162,8 +165,14 @@ def handle_command(command):
     if "start coding" in c or "work mode" in c:
         open_app("vscode")
         search_web("python documentation")
-        open_folder("documents")
-        return "All set — VS Code is up, Python docs are open, and your Documents folder is ready."
+        # Kept this from your original file since it's useful
+        open_folder("documents") 
+        return "Setting up your coding environment..."
+
+    if "focus mode" in c:
+        open_app("vscode")
+        search_web("productivity tips")
+        return "Entering focus mode..."
 
     if "study mode" in c:
         open_app("chrome")
@@ -179,6 +188,7 @@ def handle_command(command):
         search_web("Google Meet")
         return "Meeting mode on — Google Meet is loading in Chrome."
 
+    # ── STANDARD INTENT PARSING ──
     intent, raw = parse_command(command)
 
     if intent == "time":

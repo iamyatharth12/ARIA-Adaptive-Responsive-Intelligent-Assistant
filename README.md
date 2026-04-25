@@ -2,7 +2,7 @@
 
 1. Clone the repository:
 git clone https://github.com/iamyatharth12/ARIA-Adaptive-Responsive-Intelligent-Assistant.git
-cd aria-ai
+cd ARIA-Adaptive-Responsive-Intelligent-Assistant-main
 
 2. Install dependencies:
 pip install -r requirements.txt

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "conv_acd153d1",
+    "messages": [
+      {
+        "role": "user",
+        "text": "open chrome"
+      },
+      {
+        "role": "aria",
+        "text": "Opened chrome"
+      }
+    ]
+  },
+  {
+    "id": "conv_994b702e",
+    "messages": [
+      {
+        "role": "user",
+        "text": "play some rock music on spotify"
+      },
+      {
+        "role": "aria",
+        "text": "Playing: some rock music on spotify"
+      },
+      {
+        "role": "user",
+        "text": "play rock music"
+      },
+      {
+        "role": "aria",
+        "text": "Playing: rock music"
+      }
+    ]
+  },
+  {
+    "id": "conv_178e1b98",
+    "title": "what is an api key?",
+    "messages": [
+      {
+        "role": "user",
+        "text": "what is an api key?"
+      },
+      {
+        "role": "aria",
+        "text": "Searching: what is an api key?"
+      }
+    ]
+  }
+]

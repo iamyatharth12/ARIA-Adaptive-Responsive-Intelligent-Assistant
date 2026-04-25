@@ -1,7 +1,7 @@
 ## Setup Instructions
 
 1. Clone the repository:
-git clone https://github.com/YOUR_USERNAME/aria-ai.git
+git clone https://github.com/iamyatharth12/ARIA-Adaptive-Responsive-Intelligent-Assistant.git
 cd aria-ai
 
 2. Install dependencies:

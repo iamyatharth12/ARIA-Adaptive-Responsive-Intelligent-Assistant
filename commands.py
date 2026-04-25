@@ -23,11 +23,11 @@ def find_file(name):
             for f in files:
                 if name in f.lower():
                     found.append(os.path.join(dirpath, f))
-            if len(found) >= 5:  # cap results
+            if len(found) >= 5:
                 break
     if found:
-        return "Found:\n" + "\n".join(found[:5])
-    return f"File not found: '{name}'"
+        return "Here's what I found:\n" + "\n".join(found[:5])
+    return f"Couldn't find anything matching '{name}'. Try a different name?"
 
 def system_info(query):
     try:
@@ -35,18 +35,23 @@ def system_info(query):
         cpu  = psutil.cpu_percent(interval=0.5)
         ram  = psutil.virtual_memory().percent
         bat  = psutil.sensors_battery()
-        bat_str = f"{int(bat.percent)}%" if bat else "N/A"
+        bat_str = f"{int(bat.percent)}%" if bat else "not detected"
 
         if "cpu" in query:
-            return f"CPU usage: {cpu}%"
+            load = "running smoothly" if cpu < 50 else "working pretty hard"
+            return f"Your CPU is {load} at {cpu}% usage."
         elif "ram" in query or "memory" in query:
-            return f"RAM usage: {ram}%"
+            load = "looking good" if ram < 70 else "running a bit tight"
+            return f"RAM is {load} — {ram}% in use."
         elif "battery" in query or "bat" in query:
-            return f"Battery: {bat_str}"
+            if bat:
+                status = "charging" if bat.power_plugged else "on battery"
+                return f"Battery is at {int(bat.percent)}% and {status}."
+            return "Couldn't detect a battery on this machine."
         else:
-            return f"CPU: {cpu}% | RAM: {ram}% | Battery: {bat_str}"
+            return f"System check — CPU: {cpu}% | RAM: {ram}% | Battery: {bat_str}"
     except ImportError:
-        return "psutil not installed. Run: pip install psutil"
+        return "psutil isn't installed. Run: pip install psutil"
 
 # ─────────────────────────────────────────────
 #  PARSER
@@ -70,17 +75,17 @@ def parse_command(command: str):
     return ("unknown", c)
 
 # ─────────────────────────────────────────────
-#  OPEN HANDLERS
+#  MEDIA HANDLERS
 # ─────────────────────────────────────────────
 def play_spotify(command):
     query = clean_query(command)
     webbrowser.open(f"https://open.spotify.com/search/{query}")
-    return f"Playing '{query}' on Spotify"
+    return f"Pulling up '{query}' on Spotify for you..."
 
 def play_youtube(command):
     query = clean_query(command)
     webbrowser.open(f"https://www.youtube.com/results?search_query={query}")
-    return f"Playing '{query}' on YouTube"
+    return f"Loading '{query}' on YouTube..."
 
 def open_spotify():
     paths = [
@@ -91,9 +96,9 @@ def open_spotify():
         p = os.path.expandvars(p)
         if os.path.exists(p):
             os.startfile(p)
-            return "Opened Spotify App"
+            return "Launching Spotify — enjoy the music."
     webbrowser.open("https://open.spotify.com")
-    return "Opened Spotify in Browser"
+    return "Couldn't find the Spotify app, so I opened it in your browser."
 
 def open_folder(name):
     folders = {
@@ -103,36 +108,81 @@ def open_folder(name):
     }
     if name in folders:
         os.startfile(folders[name])
-        return f"Opened {name}"
-    return "Folder not found"
+        return f"Opening your {name.capitalize()} folder..."
+    return "Hmm, I don't know that folder. Try: downloads, documents, or desktop."
 
-def open_target(target):
-    apps = {"chrome": r"C:\Program Files\Google\Chrome\Application\chrome.exe"}
+def open_app(target):
+    import subprocess, time
+
+    known_apps = {
+        "chrome":   r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        "notepad":  "notepad.exe",
+        "explorer": "explorer.exe",
+        "calc":     "calc.exe",
+        "vscode":   r"C:\Users\%USERNAME%\AppData\Local\Programs\Microsoft VS Code\Code.exe",
+    }
+
     if target == "spotify":
         return open_spotify()
-    if target in apps:
+
+    if target in known_apps:
+        path = os.path.expandvars(known_apps[target])
         try:
-            os.startfile(apps[target])
-            return f"Opened {target}"
-        except:
+            subprocess.Popen(path)
+            return f"Launching {target.capitalize()}..."
+        except Exception:
             pass
-    webbrowser.open(f"https://{target}.com")
-    return f"Opened {target} in browser"
+
+    try:
+        import pyautogui
+        pyautogui.press("win")
+        time.sleep(0.8)
+        pyautogui.write(target, interval=0.05)
+        time.sleep(0.8)
+        pyautogui.press("enter")
+        return f"Couldn't find a direct path, so I searched Windows for '{target}'."
+    except ImportError:
+        return "pyautogui isn't installed. Run: pip install pyautogui"
+    except Exception as e:
+        return f"Something went wrong trying to open '{target}': {str(e)}"
 
 def search_web(raw):
     query = raw.replace("search", "", 1).replace("what is", "", 1).strip()
     webbrowser.open(f"https://www.google.com/search?q={query}")
-    return f"Searching for: {query}"
+    return f"Searching Google for '{query}'..."
 
 # ─────────────────────────────────────────────
 #  ROUTER
 # ─────────────────────────────────────────────
 def handle_command(command):
     from datetime import datetime
+    c = command.lower().strip()
+
+    # ── CHAINED COMMANDS ──
+    if "start coding" in c or "work mode" in c:
+        open_app("vscode")
+        search_web("python documentation")
+        open_folder("documents")
+        return "All set — VS Code is up, Python docs are open, and your Documents folder is ready."
+
+    if "study mode" in c:
+        open_app("chrome")
+        search_web("Khan Academy")
+        return "Study mode activated — Chrome and Khan Academy are ready for you."
+
+    if "music mode" in c or "chill mode" in c:
+        open_spotify()
+        return "Chill mode on. Spotify is launching — sit back."
+
+    if "start meeting" in c or "meeting mode" in c:
+        open_app("chrome")
+        search_web("Google Meet")
+        return "Meeting mode on — Google Meet is loading in Chrome."
+
     intent, raw = parse_command(command)
 
     if intent == "time":
-        return "Current time is " + datetime.now().strftime("%H:%M")
+        return "It's " + datetime.now().strftime("%H:%M") + " right now."
     elif intent == "find":
         name = raw.replace("find", "").replace("search file", "").strip()
         return find_file(name)
@@ -145,8 +195,8 @@ def handle_command(command):
     elif intent == "open":
         if raw in ["downloads", "documents", "desktop"]:
             return open_folder(raw)
-        return open_target(raw)
+        return open_app(raw)
     elif intent == "search":
         return search_web(raw)
 
-    return "I didn't understand that. Try: open chrome / play lofi / search python / find notes.txt / system info"
+    return "Not sure what you mean. Try: open chrome / play lofi / search python / find notes.txt / system info"
